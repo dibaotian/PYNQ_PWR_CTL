@@ -1,8 +1,42 @@
 <!DOCTYPE html>
 
+<!-- <script src='./lib/jquery-1.12.4.min.js'></script> -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script type="text/javascript" >
+	$(document).ready(function() {
+        $("#onoffswitch").on('click', function(){
+            clickSwitch()
+        });
+    
+        var clickSwitch = function() {
+            if ($("#onoffswitch").is(':checked')) {
+                console.log("在ON的状态下");
+                $.ajax({
+                    type : "GET",  //请求方式
+                    url : "/switch_clicked",  //请求路径
+                    success : function(msg) {  //异步请求成功执行的回调函数
+                        alert("电源已经打开");
+                    },//ajax引擎一般用不到；状态信息；抛出的异常信息
+                    error : function(XMLHttpRequest, textStatus, errorThrown) {
+                        alert(textStatus);
+                        alert("电源打开失败");
+                    }
+                });
+            } else {
+                console.log("在OFF的状态下");
+            }
+        };
+    });
+</script>
+
 <header>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="icon.png" type="image/x-icon" />  
+    <link rel="shortcut icon" href="icon.png" type="image/x-icon" />
+
     <title>PYNQ电源控制系统</title>
     <style>
         /* Switch开关样式 */
@@ -53,9 +87,8 @@
     </div>
     
     <div>
-        <p> 电源开关： </p><input type="checkbox" class="switch"></p>
+        <p> 电源开关： </p><input type="checkbox" id="onoffswitch" class="switch"></p>
     </div>
-    
 
     <footer>
         <p>Contact information: <a href="mailto:minx@xilinx.com">minx@xilinx.com</a>.</p>
