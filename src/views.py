@@ -45,6 +45,22 @@ def switch_clicked():
     responses['msg'] = 'success'
 
     return responses
+
+@app.route('/switch_off')
+def switch_off():
+    responses = {'code': 1, 'msg': 'failure', 'data': {}}
+
+    # Toggle board LEDs leaving small LEDs lit
+    for i in range(8):
+        [rgbled.off() for rgbled in rgbleds]
+        time.sleep(.2)
+        [rgbled.on(1) for rgbled in rgbleds]
+        time.sleep(.2)
+
+    [rgbled.off() for rgbled in rgbleds]
+
+    responses['code'] = 0
+    responses['msg'] = 'success'
       
 if __name__ == '__main__':
     app.debug = True

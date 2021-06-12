@@ -5,27 +5,43 @@
 
 <script type="text/javascript" >
 	$(document).ready(function() {
+
         $("#onoffswitch").on('click', function(){
             clickSwitch()
         });
     
         var clickSwitch = function() {
+
             if ($("#onoffswitch").is(':checked')) {
                 console.log("在ON的状态下");
-                $.ajax({
-                    type : "GET",  //请求方式
-                    url : "/switch_clicked",  //请求路径
-                    success : function(msg) {  //异步请求成功执行的回调函数
-                        alert("电源已经打开");
-                    },//ajax引擎一般用不到；状态信息；抛出的异常信息
-                    error : function(XMLHttpRequest, textStatus, errorThrown) {
-                        alert(textStatus);
-                        alert("电源打开失败");
-                    }
-                });
+                switch_status = 'ON'
+               
             } else {
                 console.log("在OFF的状态下");
+                switch_status = 'OFF'
             }
+
+            $.ajax({
+                type : "GET",  //请求方式
+                url : "/switch_clicked",  //请求路径
+                async:false,//加上这句
+				data:{switch_status:switch_status},
+                success : function(msg) {  //异步请求成功执行的回调函数
+                    if(switch_status == "ON"){
+                        alert("电源已经关闭");
+                    }else{
+                        alert("电源已经打开");
+                    }
+                },//ajax引擎一般用不到；状态信息；抛出的异常信息
+                error : function(XMLHttpRequest, textStatus, errorThrown) {
+                    if(switch_status == "ON"){
+                        alert("电源打开失败");
+                    }else{
+                        alert("电源关闭失败");
+                    }
+                    alert(textStatus);
+                }
+            });
         };
     });
 </script>
@@ -35,6 +51,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="icon" href="icon.png" type="image/x-icon" />  
+    <link href="favicon.ico" rel="shortcut icon">
     <link rel="shortcut icon" href="icon.png" type="image/x-icon" />
 
     <title>PYNQ电源控制系统</title>
