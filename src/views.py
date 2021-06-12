@@ -17,15 +17,20 @@ app = Flask(__name__)
 
 base = BaseOverlay("base.bit")
 
+POWER_STATUS="OFF"
+
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', power_status = POWER_STATUS)
 
-@app.route('/switch_clicked')
-def switch_clicked():
+@app.route('/switch_on')
+def switch_on():
 
     responses = {'code': 1, 'msg': 'failure', 'data': {}}
+
+    POWER_STATUS = 'ON'
+    print('POWER_STATUS %s',POWER_STATUS)
 
     rgbleds = [base.rgbleds[i] for i in range(4, 6)]
     leds = [base.leds[i] for i in range(4)]
@@ -50,6 +55,12 @@ def switch_clicked():
 def switch_off():
     responses = {'code': 1, 'msg': 'failure', 'data': {}}
 
+    POWER_STATUS = 'OFF'
+    print('POWER_STATUS %s',POWER_STATUS)
+
+    rgbleds = [base.rgbleds[i] for i in range(4, 6)]
+    leds = [base.leds[i] for i in range(4)]
+
     # Toggle board LEDs leaving small LEDs lit
     for i in range(8):
         [rgbled.off() for rgbled in rgbleds]
@@ -61,7 +72,9 @@ def switch_off():
 
     responses['code'] = 0
     responses['msg'] = 'success'
+    return responses
       
 if __name__ == '__main__':
+    print("PYNQ Need about 15s to initalize the system. please wait...")
     app.debug = True
     app.run(host='0.0.0.0')

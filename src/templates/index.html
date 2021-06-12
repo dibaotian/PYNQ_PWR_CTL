@@ -15,35 +15,53 @@
             if ($("#onoffswitch").is(':checked')) {
                 console.log("在ON的状态下");
                 switch_status = 'ON'
-               
+
+                $.ajax({
+                    type : "GET",  //请求方式
+                    url : "/switch_on",  //请求路径
+                    // async:false,//加上这句
+                    data:{switch_status:switch_status},
+                    success : function(msg) {  //异步请求成功执行的回调函数
+                        alert("电源已经打开");
+                    },//ajax引擎一般用不到；状态信息；抛出的异常信息
+                    error : function(XMLHttpRequest, textStatus, errorThrown) {
+
+                        alert("电源打开失败");
+                        alert(textStatus);
+                    }
+                });
+                
             } else {
                 console.log("在OFF的状态下");
                 switch_status = 'OFF'
-            }
 
-            $.ajax({
-                type : "GET",  //请求方式
-                url : "/switch_clicked",  //请求路径
-                async:false,//加上这句
-				data:{switch_status:switch_status},
-                success : function(msg) {  //异步请求成功执行的回调函数
-                    if(switch_status == "ON"){
+                $.ajax({
+                    type : "GET",  //请求方式
+                    url : "/switch_off",  //请求路径
+                    // async:false,//加上这句
+                    data:{switch_status:switch_status},
+                    success : function(msg) {  //异步请求成功执行的回调函数
                         alert("电源已经关闭");
-                    }else{
-                        alert("电源已经打开");
-                    }
-                },//ajax引擎一般用不到；状态信息；抛出的异常信息
-                error : function(XMLHttpRequest, textStatus, errorThrown) {
-                    if(switch_status == "ON"){
-                        alert("电源打开失败");
-                    }else{
+                        
+                    },//ajax引擎一般用不到；状态信息；抛出的异常信息
+                    error : function(XMLHttpRequest, textStatus, errorThrown) {
                         alert("电源关闭失败");
+                        alert(textStatus);
                     }
-                    alert(textStatus);
-                }
-            });
+                });
+            }
         };
     });
+
+    window.onload = function () {
+
+        var oBox=document.getElementById('cek_box');
+
+        var op=document.getElementsByTagName('p')[0];
+
+        op.innerHTML=oBox.checked;
+
+     };
 </script>
 
 <header>
@@ -102,9 +120,13 @@
     <div>
         <h1>PYNQ 电源控制系统</h1>
     </div>
+
+    <div>
+        <h2>电源状态:{{power_status}}</h2>
+    </div>
     
     <div>
-        <p> 电源开关： </p><input type="checkbox" id="onoffswitch" class="switch"></p>
+        <p> 电源开关： </p><input type="checkbox" %# Eval("switch_status").ToString() == "ON" ? "checked" : ""  % id="onoffswitch" class="switch"></p>
     </div>
 
     <footer>
