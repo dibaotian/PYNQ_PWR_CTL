@@ -1,21 +1,13 @@
-#!../venv/bin/python3
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import time
-
-
 from flask import Flask, render_template
 
-# from pynq import Overlay
-from pynq.overlays.base import BaseOverlay
-#AXI GPIO
-from pynq.lib import AxiGPIO
-# PS GPIO
-from pynq import GPIO
+import ctrl
+import psql
 
 app = Flask(__name__)
-
-base = BaseOverlay("base.bit")
 
 # global varilable to keep the Powre status
 POWER_STATUS="OFF"
@@ -33,20 +25,11 @@ def switch_on():
     global  POWER_STATUS
     POWER_STATUS = 'ON'
     print('POWER_STATUS',POWER_STATUS)
+    ctrl.power_on()
 
-    rgbleds = [base.rgbleds[i] for i in range(4, 6)]
-    leds = [base.leds[i] for i in range(4)]
-
-    # Toggle board LEDs leaving small LEDs lit
-    for i in range(8):
-        [l.off() for l in leds]
-        [rgbled.off() for rgbled in rgbleds]
-        time.sleep(.2)
-        [l.on() for l in leds]
-        [rgbled.on(1) for rgbled in rgbleds]
-        time.sleep(.2)
-
-    [rgbled.off() for rgbled in rgbleds]
+    # 数据库记录
+    psql.update_power_status(True)
+    psql.recoder_power_process(True)
 
     responses['code'] = 0
     responses['msg'] = 'success'
@@ -60,18 +43,11 @@ def switch_off():
     global  POWER_STATUS
     POWER_STATUS = 'OFF'
     print('POWER_STATUS',POWER_STATUS)
+    ctrl.power_off()
 
-    rgbleds = [base.rgbleds[i] for i in range(4, 6)]
-    leds = [base.leds[i] for i in range(4)]
-
-    # Toggle board LEDs leaving small LEDs lit
-    for i in range(8):
-        [rgbled.off() for rgbled in rgbleds]
-        time.sleep(.2)
-        [rgbled.on(1) for rgbled in rgbleds]
-        time.sleep(.2)
-
-    [rgbled.off() for rgbled in rgbleds]
+    # 数据库记录
+    psql.update_power_status(True)
+    psql.recoder_power_process(True)
 
     responses['code'] = 0
     responses['msg'] = 'success'

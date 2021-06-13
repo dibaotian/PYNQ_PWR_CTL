@@ -1,4 +1,4 @@
-#!../venv/bin/python3
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import time
@@ -9,7 +9,6 @@ from pynq.overlays.base import BaseOverlay
 from pynq.lib import AxiGPIO
 # PS GPIO
 from pynq import GPIO
-
 
 start_time = time.time()
 print(f'start to program base overlay: {time.strftime("%I:%M:%S")}')
@@ -34,19 +33,38 @@ print(f'program the overlay took: {prog_time} seconds')
 # gpio = GPIO.get_gpio_base()
 # print(gpio)
 
-rgbleds = [base.rgbleds[i] for i in range(4, 6)]
-leds = [base.leds[i] for i in range(4)]
+def power_on():
 
-# Toggle board LEDs leaving small LEDs lit
-for i in range(8):
-    [l.off() for l in leds]
-    [rgbled.off() for rgbled in rgbleds]
-    time.sleep(.2)
+    rgbleds = [base.rgbleds[i] for i in range(4, 6)]
+    leds = [base.leds[i] for i in range(4)]
+
+    # Toggle board LEDs leaving small LEDs lit
+    for i in range(3):
+        # [l.off() for l in leds]
+        [rgbled.off() for rgbled in rgbleds]
+        time.sleep(.2)
+        # [l.on() for l in leds]
+        [rgbled.on(1) for rgbled in rgbleds]
+        time.sleep(.2)
+
+    [rgbled.on(2) for rgbled in rgbleds]
     [l.on() for l in leds]
-    [rgbled.on(1) for rgbled in rgbleds]
-    time.sleep(.2)
 
-[rgbled.off() for rgbled in rgbleds]
+def power_off():
 
+    rgbleds = [base.rgbleds[i] for i in range(4, 6)]
+    leds = [base.leds[i] for i in range(4)]
+
+    # Toggle board LEDs leaving small LEDs lit
+    for i in range(3):
+        [l.off() for l in leds]
+        # [rgbled.off() for rgbled in rgbleds]
+        time.sleep(.2)
+        [l.on() for l in leds]
+        # [rgbled.on(1) for rgbled in rgbleds]
+        time.sleep(.2)
+
+    [rgbled.off() for rgbled in rgbleds]
+    [l.off() for l in leds]
 
 
