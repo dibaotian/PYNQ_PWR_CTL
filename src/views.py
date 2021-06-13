@@ -17,6 +17,7 @@ app = Flask(__name__)
 
 base = BaseOverlay("base.bit")
 
+# global varilable to keep the Powre status
 POWER_STATUS="OFF"
 
 
@@ -29,8 +30,9 @@ def switch_on():
 
     responses = {'code': 1, 'msg': 'failure', 'data': {}}
 
+    global  POWER_STATUS
     POWER_STATUS = 'ON'
-    print('POWER_STATUS %s',POWER_STATUS)
+    print('POWER_STATUS',POWER_STATUS)
 
     rgbleds = [base.rgbleds[i] for i in range(4, 6)]
     leds = [base.leds[i] for i in range(4)]
@@ -55,8 +57,9 @@ def switch_on():
 def switch_off():
     responses = {'code': 1, 'msg': 'failure', 'data': {}}
 
+    global  POWER_STATUS
     POWER_STATUS = 'OFF'
-    print('POWER_STATUS %s',POWER_STATUS)
+    print('POWER_STATUS',POWER_STATUS)
 
     rgbleds = [base.rgbleds[i] for i in range(4, 6)]
     leds = [base.leds[i] for i in range(4)]
@@ -72,6 +75,21 @@ def switch_off():
 
     responses['code'] = 0
     responses['msg'] = 'success'
+    return responses
+
+@app.route('/switch_status')
+def switch_status():
+    responses = {'code': 1, 'msg': 'failure', 'data': {'status':False}}
+
+    global  POWER_STATUS
+    print('current POWER_STATUS',POWER_STATUS)
+
+    responses['code'] = 0
+    responses['msg'] = 'success'
+    if POWER_STATUS is 'ON':
+        responses['data']['status'] = True
+    else:
+         responses['data']['status'] = False
     return responses
       
 if __name__ == '__main__':

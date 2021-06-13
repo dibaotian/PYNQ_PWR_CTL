@@ -4,12 +4,56 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script type="text/javascript" >
+
+    // window.onload=function(){
+
+    //     console.log("window onload");
+
+    //     var chk = document.getElementById('onoffswitch');//通过getElementById获取节点
+    //     console.log(chk)
+
+       
+
+    // }
+
+    
 	$(document).ready(function() {
 
-        $("#onoffswitch").on('click', function(){
-            clickSwitch()
-        });
-    
+        console.log("document ready");
+
+        // **********************************************************************************************************//
+        //*************************************************JS函数原型*************************************************//
+        // **********************************************************************************************************//
+
+        // get_power_status
+        // 新打开页面时,同步开关状态(状态存储再后端flask进程中)
+         var sync_power_status = function() {
+            var result = '';    // 先定义个值，方便下面赋值
+            $.ajax({
+                type : "GET",  //请求方式
+                url : "/switch_status",  //请求路径
+                dataType:'json',
+                // async:false,//加上这句
+                success : function(responses) {  //异步请求成功执行的回调函数
+                    // console.log(responses);
+                    // console.log(responses['code']);
+                    // console.log(responses['data']['status']);
+                    $("#onoffswitch").attr("checked", responses['data']['status']);//设置为选中状态
+                    // alert(responses);
+
+                    result = responses;
+                },//ajax引擎一般用不到；状态信息；抛出的异常信息
+                error : function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert("获取电源状态失败");
+                    alert(textStatus);
+                }
+            });
+
+            return result;
+        };
+
+
+        // clickSwitch
         var clickSwitch = function() {
 
             if ($("#onoffswitch").is(':checked')) {
@@ -51,28 +95,42 @@
                 });
             }
         };
+
+        // **********************************************************************************************************//
+        //****************************************************调  用*************************************************//
+        // **********************************************************************************************************//
+        ret = sync_power_status()
+
+        // console.log(ret['code'])
+        
+        // if (ret[data][status] = True) {
+        //     $("#onoffswitch").attr("checked", true);//设置为选中状态
+        // }else{
+        //     $("#onoffswitch").attr("checked", false);//设置为未选中状态
+        // }
+
+        // $("#onoffswitch").attr("checked", true);//设置为选中状态
+        // $("#onoffswitch").attr("checked", false);//设置为未选中状态
+
+        $("#onoffswitch").on('click', function(){
+            clickSwitch()
+        });
+
+
+       
+    
+       
     });
-
-    window.onload = function () {
-
-        var oBox=document.getElementById('cek_box');
-
-        var op=document.getElementsByTagName('p')[0];
-
-        op.innerHTML=oBox.checked;
-
-     };
 </script>
 
 <header>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="icon" href="icon.png" type="image/x-icon" />  
+    
     <link href="favicon.ico" rel="shortcut icon">
-    <link rel="shortcut icon" href="icon.png" type="image/x-icon" />
 
     <title>PYNQ电源控制系统</title>
+
     <style>
         /* Switch开关样式 */
         input[type='checkbox'].switch {
@@ -126,7 +184,9 @@
     </div>
     
     <div>
-        <p> 电源开关： </p><input type="checkbox" %# Eval("switch_status").ToString() == "ON" ? "checked" : ""  % id="onoffswitch" class="switch"></p>
+       
+        <p> 电源开关： </p><input type="checkbox" id="onoffswitch" class="switch"></p>
+        <!-- <p> 电源开关： </p><input type="checkbox" %# Eval("switch_status").ToString() == "ON" ? "checked" : ""  % id="onoffswitch" class="switch"></p> -->
     </div>
 
     <footer>
