@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import time
+import sys
+import signal
 from flask import Flask, render_template
 
 import ctrl
@@ -11,6 +13,14 @@ app = Flask(__name__)
 
 # global varilable to keep the Powre status
 POWER_STATUS="OFF"
+
+def exit(signum, frame):
+    print('You choose to stop me.')
+    exit()
+    signal.signal(signal.SIGINT, exit)
+    signal.signal(signal.SIGTERM, exit)
+    while 1:
+        pass
 
 
 @app.route('/')
@@ -46,8 +56,8 @@ def switch_off():
     ctrl.power_off()
 
     # 数据库记录
-    psql.update_power_status(True)
-    psql.recoder_power_process(True)
+    psql.update_power_status(False)
+    psql.recoder_power_process(False)
 
     responses['code'] = 0
     responses['msg'] = 'success'

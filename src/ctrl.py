@@ -10,6 +10,13 @@ from pynq.lib import AxiGPIO
 # PS GPIO
 from pynq import GPIO
 
+# Arduion control
+# from pynq.lib.arduino import Arduino_Analog
+# from pynq.lib.arduino import ARDUINO_GROVE_A1
+
+# Andriod IO 模块
+from pynq.lib.arduino import Arduino_IO
+
 start_time = time.time()
 print(f'start to program base overlay: {time.strftime("%I:%M:%S")}')
 base = BaseOverlay("base.bit")
@@ -22,12 +29,12 @@ print(f'program the overlay took: {prog_time} seconds')
 # btns = base.btns_gpio
 # leds = base.leds_gpio
 
-pin = GPIO.get_gpio_pin(0)
-print ('pin', pin)
-path = GPIO.get_gpio_base_path()
-print ('path', path)
-npins = GPIO.get_gpio_npins()
-print ('npins', npins)
+# pin = GPIO.get_gpio_pin(0)
+# print ('pin', pin)
+# path = GPIO.get_gpio_base_path()
+# print ('path', path)
+# npins = GPIO.get_gpio_npins()
+# print ('npins', npins)
 
 # def get_gpio_info():
 #     pin = GPIO.get_gpio_pin(0)
@@ -37,6 +44,18 @@ print ('npins', npins)
 #     npins = GPIO.get_gpio_npins()
 #     print ('npins', npins)
 
+# analog1 = Arduino_Analog(base.ARDUINO,ARDUINO_GROVE_A1)
+# lcd = Arduino_LCD18(base.ARDUINO)
+# lcd.clear()
+
+# 初始化 andrion IO 0 是输出接口
+powerio = Arduino_IO(base.ARDUINO, 0, 'out')
+# powerio.write(0)
+# value = powerio.read()
+# print (value)
+
+def powerctl(value):
+    powerio.write(value)
 
 
 
@@ -68,6 +87,8 @@ def power_on():
     [rgbled.on(2) for rgbled in rgbleds]
     [l.on() for l in leds]
 
+    powerio.write(1)
+
 def power_off():
 
     rgbleds = [base.rgbleds[i] for i in range(4, 6)]
@@ -84,5 +105,6 @@ def power_off():
 
     [rgbled.off() for rgbled in rgbleds]
     [l.off() for l in leds]
+    powerio.write(0)
 
 
