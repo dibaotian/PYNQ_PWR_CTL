@@ -22,6 +22,24 @@ print(f'program the overlay took: {prog_time} seconds')
 # btns = base.btns_gpio
 # leds = base.leds_gpio
 
+pin = GPIO.get_gpio_pin(0)
+print ('pin', pin)
+path = GPIO.get_gpio_base_path()
+print ('path', path)
+npins = GPIO.get_gpio_npins()
+print ('npins', npins)
+
+# def get_gpio_info():
+#     pin = GPIO.get_gpio_pin(0)
+#     print ('pin', pin)
+#     pah = GPIO.get_gpio_base_path()
+#     print ('path', path)
+#     npins = GPIO.get_gpio_npins()
+#     print ('npins', npins)
+
+
+
+
 # print(btns.register_map)
 
 # print(leds.register_map)
