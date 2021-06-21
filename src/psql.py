@@ -99,7 +99,7 @@ def recoder_power_process(status):
 
 if __name__ == '__main__':
     
-    # create_tables()
+    create_tables()
     ret = update_power_status(True)
     if ret:
         recoder_power_process(True)

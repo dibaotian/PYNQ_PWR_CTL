@@ -6,8 +6,8 @@ import sys
 import signal
 from flask import Flask, render_template
 
-import ctrl
 import psql
+import ctrl
 
 app = Flask(__name__)
 
